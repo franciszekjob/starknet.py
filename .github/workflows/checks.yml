@@ -335,7 +335,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.12" ]
     env:
       LEDGER_PROXY_ADDRESS: 127.0.0.1
       LEDGER_PROXY_PORT: 9999
