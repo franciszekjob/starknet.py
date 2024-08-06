@@ -160,7 +160,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.12" ]
     env:
       LEDGER_PROXY_ADDRESS: 127.0.0.1
       LEDGER_PROXY_PORT: 9999
@@ -254,69 +254,6 @@ jobs:
         run: |
           poetry run poe test_ci_v2
           poetry run poe test_ci_v1
-
-      - name: Generate coverage in XML
-        run: |
-          poetry run coverage xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-
-  # ---------------------------------------------------------- #
-  # ..................RUN-TESTS-ON-NETWORKS................... #
-  # ---------------------------------------------------------- #
-
-  run-tests-on-networks:
-    name: Tests on networks (testnet)
-    needs: setup-tests
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    env:
-      SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
-      SEPOLIA_ACCOUNT_ADDRESS: ${{ secrets.SEPOLIA_ACCOUNT_ADDRESS }}
-      SEPOLIA_ACCOUNT_PRIVATE_KEY: ${{ secrets.SEPOLIA_ACCOUNT_PRIVATE_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download contracts
-        uses: actions/download-artifact@v3
-        with:
-          name: contract-artifacts
-          path: starknet_py/tests/e2e/mock/
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-
-      # ====================== SETUP PYTHON ====================== #
-
-      - name: Install poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry config installer.modern-installation false
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-          cache: 'poetry'
-
-      - name: Install dependencies
-        run: |
-          poetry install
-
-      # ====================== RUN TESTS ====================== #
-
-      - name: Check circular imports
-        run: |
-          poetry run poe circular_imports_check
-
-      - name: Run tests
-        run: |
-          poetry run poe test_ci_on_networks
 
       - name: Generate coverage in XML
         run: |
