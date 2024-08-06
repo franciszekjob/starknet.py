@@ -9,6 +9,7 @@ on:
     branches:
       - master
       - development
+      - franciszek/1386-support-ledger-signer
   pull_request:
   workflow_dispatch:
 
